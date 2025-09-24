@@ -1,12 +1,13 @@
-import { createMemoryHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router";
 import HomePage from "../views/HomePage.vue";
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: "/",
       name: "home",
+      meta: { title: "Inspection Record" },
       component: HomePage,
     },
   ],

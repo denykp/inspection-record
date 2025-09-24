@@ -15,4 +15,17 @@ const vuetify = createVuetify({
   directives,
 });
 
-createApp(App).use(vuetify).use(router).mount("#app");
+const baseTitle = document.title;
+router.afterEach((to) => {
+  if (to.meta.title) {
+    document.title = `${baseTitle} | ${to.meta.title}`;
+  } else {
+    document.title = baseTitle;
+  }
+});
+
+const app = createApp(App);
+app.use(vuetify);
+app.use(router);
+
+app.mount("#app");
