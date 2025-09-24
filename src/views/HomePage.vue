@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import DefaultLayout from "../components/DefaultLayout.vue";
-import type { Breadcrumb } from "../types";
+import type { InspectionRecord, Breadcrumb } from "../types";
+import api from "../plugins/axios";
 
 const breadcrumbs: Breadcrumb[] = [
   {
@@ -36,6 +37,13 @@ const listTab = [
     value: "completed",
   },
 ];
+
+const listInspection = ref<InspectionRecord[]>();
+onMounted(() => {
+  api.get("/inspection-records").then((res) => {
+    listInspection.value = res.data;
+  });
+});
 </script>
 
 <template>
@@ -45,5 +53,6 @@ const listTab = [
         <v-tab v-for="tab in listTab" :value="tab.value">{{ tab.title }}</v-tab>
       </v-tabs>
     </div>
+    {{ listInspection }}
   </DefaultLayout>
 </template>
