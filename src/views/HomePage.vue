@@ -3,7 +3,8 @@ import { computed, ref, watch } from "vue";
 import DefaultLayout from "../components/DefaultLayout.vue";
 import type { InspectionRecord, Breadcrumb } from "../types";
 import { dateFormat } from "../utils/helper";
-import inspectionStore from "../store/inspection";
+import inspectionStore from "../stores/inspection-store";
+import { useRouter } from "vue-router";
 
 const breadcrumbs: Breadcrumb[] = [
   {
@@ -22,6 +23,7 @@ const breadcrumbs: Breadcrumb[] = [
     href: "#",
   },
 ];
+const router = useRouter();
 
 const tab = ref("open");
 const listTab = [
@@ -120,7 +122,12 @@ watch(tab, () => {
     </div>
     <!-- {{ listInspection }} -->
     <div class="d-flex justify-end mt-2">
-      <v-btn prepend-icon="mdi-plus" color="teal">Create Request</v-btn>
+      <v-btn
+        prepend-icon="mdi-plus"
+        color="teal"
+        @click="router.push('/create')"
+        >Create Request</v-btn
+      >
     </div>
     <div class="mt-4">
       <v-table>

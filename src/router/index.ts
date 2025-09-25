@@ -10,6 +10,12 @@ const router = createRouter({
       meta: { title: "Inspection Record" },
       component: HomePage,
     },
+    {
+      path: "/create",
+      name: "create",
+      meta: { title: "Create Yard Services" },
+      component: () => import("../views/CreatePage.vue"),
+    },
   ],
 });
 

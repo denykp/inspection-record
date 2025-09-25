@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import inspectionStore from "./store/inspection";
+import inspectionStore from "./stores/inspection-store";
 
 onMounted(async () => {
   await inspectionStore.dispatch("populateData");

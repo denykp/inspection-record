@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 import api from "../plugins/axios";
-import type { InspectionRecord } from "../types";
+import type { InspectionRecord, RawItem } from "../types";
 
 export default createStore({
   state() {
@@ -8,6 +8,7 @@ export default createStore({
       listInspection: [] as InspectionRecord[],
       listServiceType: ["New Arrival", "Maintenance", "On Spot"],
       listSow: [],
+      listRawItem: [] as RawItem[],
     };
   },
   mutations: {
@@ -16,6 +17,9 @@ export default createStore({
     },
     setSow(state, payload) {
       state.listSow = payload;
+    },
+    setRawItem(state, payload) {
+      state.listRawItem = payload;
     },
   },
   actions: {
@@ -27,6 +31,10 @@ export default createStore({
       const sowResponse = await api.get("/inspection-sow");
       const sowData = await sowResponse.data;
       commit("setSow", sowData);
+
+      const itemResponse = await api.get("/inspection-items");
+      const itemData = await itemResponse.data;
+      commit("setRawItem", itemData);
     },
   },
   getters: {
@@ -41,6 +49,9 @@ export default createStore({
     },
     listSow(state) {
       return state.listSow;
+    },
+    listRawItem(state) {
+      return state.listRawItem;
     },
   },
 });

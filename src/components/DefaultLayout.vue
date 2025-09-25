@@ -6,7 +6,7 @@ import type { Breadcrumb } from "../types";
 const route = useRoute();
 const pageTitle = computed(() => route.meta.title || "Untitled Page");
 
-const props = defineProps<{ breadcrumbs: Breadcrumb[] }>();
+defineProps<{ breadcrumbs: Breadcrumb[] }>();
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const props = defineProps<{ breadcrumbs: Breadcrumb[] }>();
         class="pa-0 text-subtitle-2"
       ></v-breadcrumbs>
     </div>
-    <div class="mt-4 pa-4">
+    <div class="mt-4 pa-4 bg-white rounded-lg">
       <slot />
     </div>
   </div>

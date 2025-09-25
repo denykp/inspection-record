@@ -12,6 +12,7 @@ mock.onGet("/inspection-records").reply(() => {
     _id: dummy._id,
     request_number: dummy.no,
     location: "Moomba",
+    service_type: "New Arrival",
     sow: dummy.sow[0]?.works.find(
       (work) => work.subscope === "38b3aae109c86bc7435403d21a924649ca1e79b2"
     ),
@@ -70,6 +71,17 @@ mock.onGet("/inspection-records").reply(() => {
 
 mock.onGet("/inspection-sow").reply(() => {
   return [200, dummy.sow[0]?.works];
+});
+
+mock.onGet("/inspection-items").reply(() => {
+  return [
+    200,
+    Array.from({ length: 3 }, () => dummy.items_raw[0]).map((item, index) => ({
+      ...item,
+      id_item: `${item?.id_item}-${index.toString()}`,
+      item_desc: `${item?.item_desc}-${index.toString()}`,
+    })),
+  ];
 });
 
 export default api;
