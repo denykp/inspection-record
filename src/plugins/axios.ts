@@ -9,13 +9,12 @@ const mock = new MockAdapter(api);
 // use mock request to simulate api request to backend api
 mock.onGet("/inspection-records").reply(() => {
   const inspectionDummy = {
-    id: dummy._id,
+    _id: dummy._id,
     request_number: dummy.no,
     location: "Moomba",
-    sow:
-      dummy.sow[0]?.works.find(
-        (work) => work.subscope === "38b3aae109c86bc7435403d21a924649ca1e79b2"
-      )?.fields || [],
+    sow: dummy.sow[0]?.works.find(
+      (work) => work.subscope === "38b3aae109c86bc7435403d21a924649ca1e79b2"
+    ),
     type: dummy.type,
     date_submitted: new Date(dummy.postingdate * 1000).toISOString(),
     ecd: new Date(dummy.postingdate * 1000).toISOString(),
@@ -25,20 +24,21 @@ mock.onGet("/inspection-records").reply(() => {
     items: dummy.items_raw.map(
       (item) =>
         ({
-          id: item.id_item,
+          _id: item.id_item,
           description: item.item_desc,
           qty: item.qty,
           lots: Array.from(
             { length: 3 },
             () =>
               ({
-                id: item.id_item,
+                _id: item.id_item,
                 number: item.batch,
                 allocation: item.allocation,
                 owner: item.owned_name,
                 condition: item.condition,
-                qty_available: item.inspected_qty,
-                qty_required: item.inspected_qty,
+                qty_available: item.qty,
+                qty_required: item.qty,
+                qty_inspected: item.inspected_qty,
                 inspection_required: true,
               } satisfies ItemLot)
           ),
@@ -46,19 +46,30 @@ mock.onGet("/inspection-records").reply(() => {
     ),
   } satisfies InspectionRecord;
 
-  const listOpen: InspectionRecord[] = Array.from({ length: 3 }, () => ({
+  const listNew: InspectionRecord[] = Array.from({ length: 3 }, () => ({
     ...inspectionDummy,
-    status: "Open",
+    status: "New",
+  }));
+  const listInProgress: InspectionRecord[] = Array.from({ length: 3 }, () => ({
+    ...inspectionDummy,
+    status: "In Progress",
   }));
   const listForReview: InspectionRecord[] = Array.from({ length: 2 }, () => ({
     ...inspectionDummy,
-    status: "For Review",
+    status: "Ready to Review",
   }));
   const listClosed: InspectionRecord[] = Array.from({ length: 5 }, () => ({
     ...inspectionDummy,
     status: "Completed",
   }));
-  return [200, [...listOpen, ...listForReview, ...listClosed]];
+  return [
+    200,
+    [...listNew, ...listInProgress, ...listForReview, ...listClosed],
+  ];
+});
+
+mock.onGet("/inspection-sow").reply(() => {
+  return [200, dummy.sow[0]?.works];
 });
 
 export default api;

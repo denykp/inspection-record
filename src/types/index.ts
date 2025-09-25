@@ -5,17 +5,18 @@ export interface Breadcrumb {
 }
 
 export interface ItemLot {
-  id: string;
+  _id: string;
   number: string;
   allocation: string;
   owner: string;
   condition: string;
   qty_available: number;
   qty_required: number;
+  qty_inspected: number;
   inspection_required: boolean;
 }
 export interface InspectionItem {
-  id: string;
+  _id: string;
   description: string;
   qty: number;
   lots: ItemLot[];
@@ -30,16 +31,22 @@ export interface SowField {
   drift_inspection: boolean;
   _id: string;
 }
+export interface SowSubscope {
+  _id: string;
+  subscope: string;
+  subscope_name: string;
+  fields: SowField[];
+}
 export interface InspectionRecord {
-  id: string;
+  _id: string;
   request_number: string;
   location: string;
-  sow: SowField[];
+  sow?: SowSubscope;
   type: string;
   date_submitted: string;
   ecd: string;
   related_to: string;
   third_party: string;
-  status: string;
+  status: "New" | "In Progress" | "Ready to Review" | "Completed" | string;
   items: InspectionItem[];
 }
