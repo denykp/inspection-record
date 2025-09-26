@@ -132,7 +132,7 @@ const handleSave = (isDraft: boolean) => {
     ...formFields.value,
     status: isDraft ? "Draft" : "New",
   });
-  router.push("/");
+  router.push(`/detail/${formFields.value._id}`);
 };
 </script>
 

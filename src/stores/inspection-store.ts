@@ -81,5 +81,8 @@ export default createStore({
     listRawItem(state) {
       return state.listRawItem;
     },
+    inspectionDetail: (state) => (id: string) => {
+      return state.listInspection.find((inspection) => inspection._id === id);
+    },
   },
 });

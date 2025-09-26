@@ -144,7 +144,7 @@ watch(tab, () => {
         </thead>
         <tbody>
           <template v-for="(item, index) in listInspection" :key="item._id">
-            <tr>
+            <tr @click="router.push(`/detail/${item._id}`)">
               <template v-for="column in tableColumns" :key="column.key">
                 <td v-if="column.key === 'sow'">
                   {{ item[column.key]?.subscope_name }}
