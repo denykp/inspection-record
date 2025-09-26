@@ -12,13 +12,16 @@ export default createStore({
     };
   },
   mutations: {
-    setInspection(state, payload) {
+    SET_INSPECTION(state, payload) {
       state.listInspection = payload;
     },
-    setSow(state, payload) {
+    ADD_INSPECTION(state, payload) {
+      state.listInspection.push(payload);
+    },
+    SET_SOW(state, payload) {
       state.listSow = payload;
     },
-    setRawItem(state, payload) {
+    SET_RAW_ITEM(state, payload) {
       state.listRawItem = payload;
     },
   },
@@ -26,15 +29,40 @@ export default createStore({
     async populateData({ commit }) {
       const response = await api.get("/inspection-records");
       const data = await response.data;
-      commit("setInspection", data);
+      commit("SET_INSPECTION", data);
 
       const sowResponse = await api.get("/inspection-sow");
       const sowData = await sowResponse.data;
-      commit("setSow", sowData);
+      commit("SET_SOW", sowData);
 
       const itemResponse = await api.get("/inspection-items");
       const itemData = await itemResponse.data;
-      commit("setRawItem", itemData);
+      commit("SET_RAW_ITEM", itemData);
+    },
+    async addInspection({ commit, state }, payload: InspectionRecord) {
+      const lastRequestNumber = state.listInspection
+        .map((inspection) =>
+          Number(
+            inspection.request_number.replace(
+              `RRIN-${new Date().getFullYear()}-`,
+              ""
+            )
+          )
+        )
+        .sort((a, b) => b - a)[0];
+      let newRequestNumber = "";
+      if (!lastRequestNumber) {
+        newRequestNumber = `RRIN-${new Date().getFullYear()}-${"0001"}`;
+      } else {
+        newRequestNumber = `RRIN-${new Date().getFullYear()}-${String(
+          lastRequestNumber + 1
+        ).padStart(4, "0")}`;
+      }
+      commit("ADD_INSPECTION", {
+        ...payload,
+        request_number: newRequestNumber,
+        date_submitted: new Date().toISOString(),
+      } as InspectionRecord);
     },
   },
   getters: {

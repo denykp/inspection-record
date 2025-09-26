@@ -30,7 +30,7 @@ const listTab = [
   {
     title: "Open",
     value: "open",
-    status: ["New", "In Progress"],
+    status: ["Draft", "New", "In Progress"],
   },
   {
     title: "For Review",

@@ -50,24 +50,41 @@ const formFields = ref<InspectionRecord>({
   location: "",
   service_type: "",
   sow: undefined,
-  type: "",
+  type: "11",
   date_submitted: "",
   ecd: "",
   related_to: "",
-  third_party: "",
-  status: "New",
+  third_party: "2",
+  status: "Draft",
   dc_code: "",
   charge_to_customer: false,
   customer_name: "",
   items: [],
+  note_to_yard: "",
 });
+const fieldValidations = {
+  location: [
+    (required: string) => (required ? true : "Please select location"),
+  ],
+  service_type: [
+    (value: string) => (value ? true : "Please select service type"),
+  ],
+  sow: [(value: SowSubscope) => (value ? true : "Please select scope of work")],
+  ecd: [(required: string) => (required ? true : "Please select ECD")],
+  related_to: [
+    (required: string) => (required ? true : "Please select related to"),
+  ],
+  customer_name: [
+    (required: string) => (required ? true : "Please select customer"),
+  ],
+};
+
 const selectedSow = computed({
   get: () => formFields.value.sow?._id || "",
   set: (value) => {
     formFields.value.sow = listSow.value.find((sow) => sow._id === value);
   },
 });
-
 const expandedRow = ref<string>("");
 const selectedRow = ref<string[]>([]);
 const handleAddItem = () => {
@@ -92,7 +109,7 @@ const handleAddlot = (index: string, item: RawItem) => {
     targetItem.lots.push({
       _id: item.id_item,
       number: item.batch,
-      allocation: item.allocation,
+      allocation: formFields.value.customer_name || item.allocation,
       owner: item.owned_name,
       condition: item.condition,
       qty_available: item.qty,
@@ -108,11 +125,20 @@ const handleDeleteLot = (index: number, indexLot: number) => {
     targetItem.lots.splice(indexLot, 1);
   }
 };
+
+const handleSave = (isDraft: boolean) => {
+  console.log("isDraft", isDraft);
+  inspectionStore.dispatch("addInspection", {
+    ...formFields.value,
+    status: isDraft ? "Draft" : "New",
+  });
+  router.push("/");
+};
 </script>
 
 <template>
   <DefaultLayout :breadcrumbs="breadcrumbs">
-    <v-form v-model="isFormValid">
+    <v-form v-model="isFormValid" @submit.prevent>
       <v-row no-gutters>
         <v-col
           cols="12"
@@ -128,6 +154,8 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                   :items="listServiceType"
                   placeholder="Select Service Type"
                   variant="outlined"
+                  density="compact"
+                  :rules="fieldValidations.service_type"
                 ></v-autocomplete>
               </FormField>
             </div>
@@ -140,6 +168,8 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                   item-value="_id"
                   variant="outlined"
                   placeholder="Select Scope of Work"
+                  density="compact"
+                  :rules="fieldValidations.sow"
                 ></v-autocomplete>
               </FormField>
             </div>
@@ -166,6 +196,8 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                 :items="listLocation"
                 variant="outlined"
                 placeholder="Select Location"
+                density="compact"
+                :rules="fieldValidations.location"
               ></v-autocomplete>
             </FormField>
             <FormField required label="Estimated Completion Date">
@@ -174,6 +206,9 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                 prepend-icon=""
                 variant="outlined"
                 placeholder="Select ECD"
+                density="compact"
+                :rules="fieldValidations.ecd"
+                :min="new Date().toISOString().slice(0, 10)"
               ></VDateInput>
             </FormField>
             <FormField required label="Related To">
@@ -182,6 +217,8 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                 :items="listRelatedTo"
                 variant="outlined"
                 placeholder="Select Related To"
+                density="compact"
+                :rules="fieldValidations.related_to"
               ></v-autocomplete>
             </FormField>
           </div>
@@ -192,11 +229,12 @@ const handleDeleteLot = (index: number, indexLot: number) => {
             >
               <label>Custom Field Header</label>
             </div>
-            <FormField required label="D/C Code">
+            <FormField label="D/C Code">
               <v-text-field
                 v-model="formFields.dc_code"
                 placeholder="Enter D/C Code"
                 variant="outlined"
+                density="compact"
               ></v-text-field>
             </FormField>
           </div>
@@ -222,7 +260,9 @@ const handleDeleteLot = (index: number, indexLot: number) => {
               v-model="formFields.customer_name"
               :items="listCustomer"
               variant="outlined"
-              placeholder="Select Related To"
+              placeholder="Select Customer Name"
+              density="compact"
+              :rules="fieldValidations.customer_name"
             ></v-autocomplete>
           </FormField>
         </v-col>
@@ -365,7 +405,6 @@ const handleDeleteLot = (index: number, indexLot: number) => {
                         <td>
                           <v-text-field
                             v-model="lot.allocation"
-                            type="number"
                             variant="outlined"
                             width="100"
                             density="compact"
@@ -455,12 +494,23 @@ const handleDeleteLot = (index: number, indexLot: number) => {
       </div>
       <div class="mt-8">
         <div class="text-lg font-weight-bold">Note to Yard</div>
-        <v-textarea placeholder="Enter Note"></v-textarea>
+        <v-textarea
+          v-model="formFields.note_to_yard"
+          placeholder="Enter Note"
+        ></v-textarea>
       </div>
       <div class="d-flex justify-end ga-2">
-        <v-btn @click="router.go(-1)" variant="plain">Cancel</v-btn>
-        <v-btn>Save as Draft</v-btn>
-        <v-btn type="submit" color="teal">Submit</v-btn>
+        <v-btn @click="router.push('/')" variant="plain">Cancel</v-btn>
+        <v-btn type="submit" :disabled="!isFormValid" @click="handleSave(true)"
+          >Save as Draft</v-btn
+        >
+        <v-btn
+          type="submit"
+          :disabled="!isFormValid"
+          color="teal"
+          @click="handleSave(false)"
+          >Submit</v-btn
+        >
       </div>
     </v-form>
   </DefaultLayout>

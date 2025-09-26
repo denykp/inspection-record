@@ -12,7 +12,7 @@ mock.onGet("/inspection-records").reply(() => {
     _id: dummy._id,
     request_number: dummy.no,
     location: "Moomba",
-    service_type: "New Arrival",
+    service_type: dummy.insp_type,
     sow: dummy.sow[0]?.works.find(
       (work) => work.subscope === "38b3aae109c86bc7435403d21a924649ca1e79b2"
     ),
@@ -47,11 +47,11 @@ mock.onGet("/inspection-records").reply(() => {
     ),
   } satisfies InspectionRecord;
 
-  const listNew: InspectionRecord[] = Array.from({ length: 3 }, () => ({
+  const listNew: InspectionRecord[] = Array.from({ length: 1 }, () => ({
     ...inspectionDummy,
     status: "New",
   }));
-  const listInProgress: InspectionRecord[] = Array.from({ length: 3 }, () => ({
+  const listInProgress: InspectionRecord[] = Array.from({ length: 2 }, () => ({
     ...inspectionDummy,
     status: "In Progress",
   }));
