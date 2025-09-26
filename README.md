@@ -1,5 +1,15 @@
 # Vue 3 + TypeScript + Vite
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This project scaffolded from Vite and using Vuetify as the UI Framework
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+I created a mock api request to simulate api request isong axios
+
+## Installation and Run
+
+1. Clone the repository
+2. Install dependencies with `pnpm install`
+3. Run the project with `pnpm dev`
+4. Open your web browser and navigate to `http://localhost:5173`
+5. The data from create page is stored in Vuex Store, so it will disappear when page reloaded
+
+Note: Make sure you have the latest version of pnpm and node.js v22 installed on your machine.

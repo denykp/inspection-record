@@ -166,7 +166,7 @@ watch(tab, () => {
                   variant="tonal"
                   class="border"
                   density="comfortable"
-                  @click="
+                  @click.stop="
                     expandedRow === index.toString()
                       ? (expandedRow = '')
                       : (expandedRow = index.toString())
